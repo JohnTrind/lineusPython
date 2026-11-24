@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Line-us Studio</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='80' font-size='80'&gt;✏️&lt;/text&gt;&lt;/svg&gt;">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="brand-icon">✏️</span>
+      <h1>Line-us <span>Studio</span></h1>
+    </div>
+    <div class="conn">
+      <label class="sim-toggle" title="Usa um robô simulado (sem hardware)">
+        <input type="checkbox" id="sim-toggle">
+        <span>Simulação</span>
+      </label>
+      <input type="text" id="host-input" placeholder="line-us.local ou IP do robô" spellcheck="false">
+      <button id="connect-btn" class="btn primary">Ligar</button>
+      <div class="conn-status">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">desligado</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="board-col">
+      <div class="board-wrap" id="board-wrap">
+        <canvas id="board"></canvas>
+        <div class="board-coords" id="board-coords"></div>
+      </div>
+
+      <div class="job-bar" id="job-bar" hidden>
+        <div class="job-info">
+          <span id="job-name"></span>
+          <span id="job-progress-text"></span>
+        </div>
+        <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="job-actions">
+          <label class="check" id="fit-wrap" title="Escala e centra o desenho na área segura">
+            <input type="checkbox" id="fit-check" checked>
+            <span>Ajustar à área</span>
+          </label>
+          <button id="job-start" class="btn primary">▶ Desenhar</button>
+          <button id="job-pause" class="btn" hidden>⏸ Pausa</button>
+          <button id="job-resume" class="btn" hidden>▶ Retomar</button>
+          <button id="job-stop" class="btn danger" hidden>⏹ Parar</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <nav class="tabs">
+        <button class="tab active" data-tab="live">🖱 Live</button>
+        <button class="tab" data-tab="gcode">⚙ G-code</button>
+        <button class="tab" data-tab="image">🖼 Imagem</button>
+      </nav>
+
+      <section class="panel active" id="panel-live">
+        <p class="hint">O robô segue o rato no canvas. Carrega e arrasta para desenhar — soltar levanta a caneta.</p>
+        <button id="live-toggle" class="btn primary block">Ativar modo live</button>
+        <div class="field">
+          <label for="live-speed">Velocidade <span id="live-speed-val">10</span></label>
+          <input type="range" id="live-speed" min="1" max="30" value="10">
+        </div>
+        <button id="live-clear" class="btn block">Limpar traço do ecrã</button>
+      </section>
+
+      <section class="panel" id="panel-gcode">
+        <div class="dropzone" id="gcode-drop">
+          <input type="file" id="gcode-file" accept=".gcode,.nc,.txt,.g" hidden>
+          <span>Arrasta um ficheiro G-code<br>ou <u>clica para escolher</u></span>
+        </div>
+        <div class="upload-info" id="gcode-info" hidden></div>
+        <ul class="warnings" id="gcode-warnings"></ul>
+      </section>
+
+      <section class="panel" id="panel-image">
+        <div class="dropzone" id="image-drop">
+          <input type="file" id="image-file" accept="image/*" hidden>
+          <span>Arrasta uma imagem<br>ou <u>clica para escolher</u></span>
+        </div>
+        <div class="field">
+          <label for="img-detail">Detalhe <span id="img-detail-val">50</span></label>
+          <input type="range" id="img-detail" min="0" max="100" value="50">
+        </div>
+        <div class="field">
+          <label for="img-simplify">Simplificação <span id="img-simplify-val">1.0</span></label>
+          <input type="range" id="img-simplify" min="0" max="50" value="10">
+        </div>
+        <label class="check">
+          <input type="checkbox" id="img-hatching">
+          <span>Hatching (sombras)</span>
+        </label>
+        <div class="field" id="img-density-field" hidden>
+          <label for="img-density">Densidade do hatching <span id="img-density-val">50</span></label>
+          <input type="range" id="img-density" min="0" max="100" value="50">
+        </div>
+        <label class="check">
+          <input type="checkbox" id="img-invert">
+          <span>Inverter (fundo escuro)</span>
+        </label>
+        <button id="img-convert" class="btn primary block" disabled>Converter</button>
+        <div class="upload-info" id="image-info" hidden></div>
+        <ul class="warnings" id="image-warnings"></ul>
+      </section>
+
+      <section class="card robot-card">
+        <h2>Robô</h2>
+        <div class="pos" id="robot-pos">X — &nbsp; Y — &nbsp; Z —</div>
+        <div class="btn-row">
+          <button id="robot-home" class="btn">🏠 Home</button>
+          <button id="robot-penup" class="btn">⬆ Caneta</button>
+          <button id="robot-pendown" class="btn">⬇ Caneta</button>
+        </div>
+        <form id="gcode-console" autocomplete="off">
+          <input type="text" id="gcode-cmd" placeholder="Comando manual, ex: M114" spellcheck="false">
+        </form>
+      </section>
+
+      <section class="card log-card">
+        <h2>Registo</h2>
+        <div class="log" id="log"></div>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>

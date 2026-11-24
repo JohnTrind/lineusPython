@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Local/private — personal notes and test artifacts
+notas.md
+lineusstudio.zip
+test_artifacts/
+.claude/
+
+# Misc
+nohup.out
+
+# --- limpeza ---
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pio/
+build/
+dist/
+.expo/
+.env
+.env.*
+!.env.example
+secrets.py
+secrets.h
+*.log
+*.bin
+*.mp4
+.claude/
+.DS_Store
+Thumbs.db
